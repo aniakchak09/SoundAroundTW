@@ -1,0 +1,18 @@
+# Claude Code
+.claude/
+
+# Secrets & tokens
+mailtrap_token.txt
+*.env
+.env*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# PDFs (optional — remove if you want them versioned)
+# *.pdf

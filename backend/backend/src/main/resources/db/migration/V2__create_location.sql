@@ -1,0 +1,7 @@
+CREATE TABLE location (
+    id        BIGSERIAL PRIMARY KEY,
+    user_id   BIGINT           UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    lat       DOUBLE PRECISION NOT NULL,
+    lng       DOUBLE PRECISION NOT NULL,
+    last_seen TIMESTAMP        NOT NULL DEFAULT NOW()
+);
