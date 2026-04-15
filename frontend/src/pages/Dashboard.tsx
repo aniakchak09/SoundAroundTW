@@ -12,8 +12,23 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return
     api.get(`/api/users/${user.userId}`).then(r => setProfile(r.data)).catch(() => {})
-    api.get(`/api/music/user/${user.userId}`).then(r => setSnapshot(r.data)).catch(() => {})
   }, [user])
+
+  useEffect(() => {
+    if (!user || !profile) return
+    const sync = () => {
+      if (profile.lastfmUsername) {
+        api.post(`/api/music/user/${user.userId}/sync`, { lastfmUsername: profile.lastfmUsername })
+          .then(r => setSnapshot(r.data))
+          .catch(() => {})
+      } else {
+        api.get(`/api/music/user/${user.userId}`).then(r => setSnapshot(r.data)).catch(() => {})
+      }
+    }
+    sync()
+    const interval = setInterval(sync, 25000)
+    return () => clearInterval(interval)
+  }, [user, profile])
 
   return (
     <div className="space-y-6">
@@ -27,9 +42,6 @@ export default function Dashboard() {
           <p className="text-gray-500 text-sm mb-1">Account</p>
           <p className="text-white font-semibold">{profile?.username}</p>
           <p className="text-gray-400 text-sm">{profile?.email}</p>
-          <span className="inline-block mt-2 text-xs px-2 py-0.5 rounded-full bg-purple-900 text-purple-300">
-            {profile?.role}
-          </span>
         </div>
 
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
@@ -77,9 +89,9 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: 'Discover Users', to: '/users', icon: '👥' },
-          { label: 'Browse Tracks', to: '/tracks', icon: '🎵' },
           { label: 'My Friends', to: '/friends', icon: '🤝' },
+          { label: 'Nearby Map', to: '/map', icon: '🗺️' },
+          { label: 'Profile', to: '/profile', icon: '👤' },
           { label: 'Send Feedback', to: '/feedback', icon: '💬' },
         ].map(item => (
           <Link key={item.to} to={item.to}

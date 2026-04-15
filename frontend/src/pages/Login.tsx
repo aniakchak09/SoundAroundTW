@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import api from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
-  const { login } = useAuth()
-  const navigate = useNavigate()
+  const { login, user } = useAuth()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  if (user) return <Navigate to="/" replace />
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -17,7 +18,7 @@ export default function Login() {
     try {
       const res = await api.post('/api/auth/login', form)
       login(res.data)
-      navigate('/')
+      window.location.replace('/')
     } catch {
       setError('Invalid email or password.')
     } finally {

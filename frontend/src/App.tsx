@@ -10,6 +10,7 @@ import Tracks from './pages/Tracks'
 import Friends from './pages/Friends'
 import Profile from './pages/Profile'
 import Feedback from './pages/Feedback'
+import MapPage from './pages/Map'
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
               <Route path="/friends"  element={<Friends />}   />
               <Route path="/profile"  element={<Profile />}   />
               <Route path="/feedback" element={<Feedback />}  />
+              <Route path="/map"      element={<MapPage />}   />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" />} />

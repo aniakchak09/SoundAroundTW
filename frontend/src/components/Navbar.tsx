@@ -3,9 +3,8 @@ import { useAuth } from '../context/AuthContext'
 
 const links = [
   { to: '/',         label: 'Dashboard' },
-  { to: '/users',    label: 'Users'     },
-  { to: '/tracks',   label: 'Tracks'    },
   { to: '/friends',  label: 'Friends'   },
+  { to: '/map',      label: 'Map'       },
   { to: '/profile',  label: 'Profile'   },
   { to: '/feedback', label: 'Feedback'  },
 ]
@@ -46,9 +45,6 @@ export default function Navbar() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-gray-500 text-sm">{user?.username}</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-purple-900 text-purple-300">
-              {user?.role}
-            </span>
             <button
               onClick={handleLogout}
               className="text-sm text-gray-400 hover:text-white px-3 py-1.5 rounded border border-gray-700 hover:border-gray-500 transition"

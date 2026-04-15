@@ -10,7 +10,6 @@ export default function Profile() {
   const [form, setForm] = useState({ username: '', lastfmUsername: '', privacyMode: 'PUBLIC' })
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
-  const [syncing, setSyncing] = useState(false)
 
   const fetchProfile = () => {
     if (!user) return
@@ -41,18 +40,6 @@ export default function Profile() {
       fetchProfile()
     } catch (err: any) {
       setError(err.response?.data?.message || 'Update failed.')
-    }
-  }
-
-  const handleSync = async () => {
-    setSyncing(true)
-    try {
-      await api.post(`/api/music/user/${user?.userId}/sync`, { lastfmUsername: form.lastfmUsername })
-      fetchProfile()
-    } catch {
-      // ignore
-    } finally {
-      setSyncing(false)
     }
   }
 
@@ -112,19 +99,14 @@ export default function Profile() {
         </button>
       </form>
 
-      {/* Now Playing */}
+      {/* Last.fm track */}
       <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-white font-semibold">Now Playing</h2>
-          <button onClick={handleSync} disabled={syncing || !form.lastfmUsername}
-            className="text-xs px-3 py-1.5 rounded-lg border border-gray-700 text-gray-300 hover:bg-gray-800 disabled:opacity-40 transition">
-            {syncing ? 'Syncing…' : 'Sync Last.fm'}
-          </button>
-        </div>
-        {!form.lastfmUsername && (
+        <h2 className="text-white font-semibold">Last.fm Activity</h2>
+        {!form.lastfmUsername ? (
           <p className="text-gray-500 text-sm">Link your Last.fm account above to sync music.</p>
-        )}
-        {snapshot?.isPlaying ? (
+        ) : !snapshot?.trackName ? (
+          <p className="text-gray-500 text-sm">No recent tracks found.</p>
+        ) : (
           <div className="flex items-center gap-4">
             {snapshot.albumArt && (
               <img src={snapshot.albumArt} alt="album" className="w-14 h-14 rounded-lg object-cover" />
@@ -132,15 +114,19 @@ export default function Profile() {
             <div>
               <p className="text-white font-semibold">{snapshot.trackName}</p>
               <p className="text-gray-400 text-sm">{snapshot.artistName}</p>
-              <span className="inline-flex items-center gap-1 text-xs text-green-400 mt-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                Live
-              </span>
+              {snapshot.isPlaying ? (
+                <span className="inline-flex items-center gap-1 text-xs text-green-400 mt-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                  Now playing
+                </span>
+              ) : (
+                <span className="text-xs text-gray-500 mt-1 block">
+                  Last listened · {new Date(snapshot.syncedAt).toLocaleString()}
+                </span>
+              )}
             </div>
           </div>
-        ) : snapshot ? (
-          <p className="text-gray-500 text-sm">Nothing playing right now.</p>
-        ) : null}
+        )}
       </div>
     </div>
   )

@@ -77,7 +77,6 @@ export default function Users() {
               <th className="px-5 py-3">ID</th>
               <th className="px-5 py-3">Username</th>
               <th className="px-5 py-3">Email</th>
-              <th className="px-5 py-3">Role</th>
               <th className="px-5 py-3">Privacy</th>
               <th className="px-5 py-3">Joined</th>
               <th className="px-5 py-3">Actions</th>
@@ -89,16 +88,15 @@ export default function Users() {
                 <td className="px-5 py-3 text-gray-500">{u.id}</td>
                 <td className="px-5 py-3 text-white font-medium">{u.username}</td>
                 <td className="px-5 py-3 text-gray-400">{u.email}</td>
-                <td className="px-5 py-3">
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-purple-900 text-purple-300">{u.role}</span>
-                </td>
                 <td className="px-5 py-3 text-gray-400">{u.privacyMode.replace('_', ' ')}</td>
                 <td className="px-5 py-3 text-gray-500">{new Date(u.createdAt).toLocaleDateString()}</td>
                 <td className="px-5 py-3 flex gap-2">
-                  <button onClick={() => openEdit(u)}
-                    className="text-xs px-3 py-1 rounded border border-gray-700 text-gray-300 hover:bg-gray-700 transition">
-                    Edit
-                  </button>
+                  {u.id === me?.userId && (
+                    <button onClick={() => openEdit(u)}
+                      className="text-xs px-3 py-1 rounded border border-gray-700 text-gray-300 hover:bg-gray-700 transition">
+                      Edit
+                    </button>
+                  )}
                   {me?.role === 'ADMIN' && u.id !== me.userId && (
                     <button onClick={() => setDeleteId(u.id)}
                       className="text-xs px-3 py-1 rounded border border-red-900 text-red-400 hover:bg-red-950 transition">
