@@ -27,10 +27,15 @@ class MusicSnapshotService(
         val nowPlaying = lastFmService.getNowPlaying(request.lastfmUsername)
         val snapshot = snapshotRepository.findByUserId(userId)
             .orElse(MusicSnapshot(user = user, isPlaying = false))
-        snapshot.trackName = nowPlaying?.trackName
-        snapshot.artistName = nowPlaying?.artistName
-        snapshot.albumArt = nowPlaying?.albumArt
-        snapshot.isPlaying = nowPlaying != null
+        if (nowPlaying != null) {
+            snapshot.trackName = nowPlaying.trackName
+            snapshot.artistName = nowPlaying.artistName
+            snapshot.albumArt = nowPlaying.albumArt
+            snapshot.isPlaying = true
+        } else {
+            snapshot.isPlaying = false
+            // keep existing trackName/artistName/albumArt as last listened
+        }
         snapshot.syncedAt = LocalDateTime.now()
         return MusicSnapshotResponse.from(snapshotRepository.save(snapshot))
     }

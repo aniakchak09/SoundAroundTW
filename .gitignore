@@ -15,4 +15,4 @@ Thumbs.db
 .idea/
 
 # PDFs (optional — remove if you want them versioned)
-# *.pdf
+*.pdf

@@ -64,26 +64,30 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {snapshot && (
+      {snapshot?.trackName && (
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <p className="text-gray-500 text-sm mb-3">Now Playing</p>
-          {snapshot.isPlaying ? (
-            <div className="flex items-center gap-4">
-              {snapshot.albumArt && (
-                <img src={snapshot.albumArt} alt="album" className="w-14 h-14 rounded-lg object-cover" />
-              )}
-              <div>
-                <p className="text-white font-semibold">{snapshot.trackName}</p>
-                <p className="text-gray-400 text-sm">{snapshot.artistName}</p>
+          <p className="text-gray-500 text-sm mb-3">
+            {snapshot.isPlaying ? 'Now Playing' : 'Last Listened'}
+          </p>
+          <div className="flex items-center gap-4">
+            {snapshot.albumArt && (
+              <img src={snapshot.albumArt} alt="album" className="w-14 h-14 rounded-lg object-cover" />
+            )}
+            <div>
+              <p className="text-white font-semibold">{snapshot.trackName}</p>
+              <p className="text-gray-400 text-sm">{snapshot.artistName}</p>
+              {snapshot.isPlaying ? (
                 <span className="inline-flex items-center gap-1 text-xs text-green-400 mt-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                   Live
                 </span>
-              </div>
+              ) : (
+                <span className="text-xs text-gray-500 mt-1 block">
+                  {new Date(snapshot.syncedAt).toLocaleString()}
+                </span>
+              )}
             </div>
-          ) : (
-            <p className="text-gray-500 text-sm">Nothing playing right now.</p>
-          )}
+          </div>
         </div>
       )}
 

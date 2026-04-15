@@ -1,5 +1,6 @@
 package com.soundaround.backend.security
 
+import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -25,15 +26,19 @@ class JwtAuthFilter(
             chain.doFilter(request, response)
             return
         }
-        val token = header.substring(7)
-        val email = jwtService.extractUsername(token)
-        if (SecurityContextHolder.getContext().authentication == null) {
-            val userDetails = userDetailsService.loadUserByUsername(email)
-            if (jwtService.isTokenValid(token, userDetails)) {
-                val auth = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-                auth.details = WebAuthenticationDetailsSource().buildDetails(request)
-                SecurityContextHolder.getContext().authentication = auth
+        try {
+            val token = header.substring(7)
+            val email = jwtService.extractUsername(token)
+            if (SecurityContextHolder.getContext().authentication == null) {
+                val userDetails = userDetailsService.loadUserByUsername(email)
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    val auth = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+                    auth.details = WebAuthenticationDetailsSource().buildDetails(request)
+                    SecurityContextHolder.getContext().authentication = auth
+                }
             }
+        } catch (_: JwtException) {
+            // expired or malformed token — leave SecurityContext empty, Spring Security will return 401
         }
         chain.doFilter(request, response)
     }
