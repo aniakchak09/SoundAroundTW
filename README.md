@@ -29,7 +29,7 @@ cd SoundAroundTW
 ### 2. Backend
 
 ```bash
-cd backend/backend
+cd backend
 ./gradlew bootRun        # Linux / macOS
 gradlew.bat bootRun      # Windows
 ```
